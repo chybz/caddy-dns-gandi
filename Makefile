@@ -2,9 +2,8 @@
 SHELL := $(shell which bash)
 
 # Update this
-APP_ORG := chybz.net
-APP_NAME := caddy
-APP_VER := 0.1
+APP_REPO := remychibois/caddy
+APP_TAG := gandi-latest
 
 TOPDIR := $(shell pwd)
 
@@ -41,9 +40,15 @@ help:
 docker-image: ## Builds Docker image
 	docker \
 	    build \
-	    -t $(APP_ORG):$(APP_NAME)-$(APP_VER) \
+	    -t $(APP_REPO):$(APP_TAG) \
 	    --progress plain \
 	    . 2>&1 | tee docker.log
+
+docker-push: ## Push Docker image to registry
+	cat ~/configs/docker/password.txt \
+	    | docker login --username remychibois --password-stdin
+	docker \
+	    push $(APP_REPO):$(APP_TAG)
 
 ###############################################################################
 #
